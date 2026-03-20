@@ -1,0 +1,15 @@
+{
+  "artifact_type": "ERIL-EVIDENCE",
+  "artifact_version": "0.1",
+  "eri_id": "ERI-MIN-001",
+  "eril_reference": "examples/eri-minimal/ERIL.md",
+  "execution_reference": "examples/eri-minimal/EXECUTION.json",
+  "outcome": "EXECUTE",
+  "evidence_hash": "b91f8c7d3a2e4f6a9d0c",
+  "issued_at": "2026-03-20T18:32:50Z",
+  "properties": {
+    "deterministic": true,
+    "fail_closed": true,
+    "replay_supported": true
+  }
+}

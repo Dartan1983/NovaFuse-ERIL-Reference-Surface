@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ERIL Evidence Artifact (Public Schema)",
+  "description": "Public structural schema for ERIL evidence artifacts. Defines shape only, not governance meaning.",
+  "type": "object",
+  "required": [
+    "artifact_type",
+    "artifact_version",
+    "eri_id",
+    "eril_reference",
+    "execution_reference",
+    "outcome",
+    "issued_at"
+  ],
+  "properties": {
+    "artifact_type": {
+      "type": "string",
+      "enum": ["ERIL-EVIDENCE"]
+    },
+    "artifact_version": {
+      "type": "string"
+    },
+    "eri_id": {
+      "type": "string"
+    },
+    "eril_reference": {
+      "type": "string"
+    },
+    "execution_reference": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": ["EXECUTE", "REFUSE"]
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence_hash": {
+      "type": "string"
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
