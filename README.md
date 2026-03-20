@@ -3,7 +3,34 @@
 **ERIL (Executable Reference Implementation Language)** defines how governance decisions are expressed as executable procedures that produce replayable evidence.  
 This repository provides a **public reference surface**: minimal artifacts sufficient to validate **fail‑closed execution**, **deterministic refusal**, and **cryptographic evidence production** — without publishing NovaFuse's full normative specification or proprietary governance methodology.
 
-> **Design principle:** unsafe states are made structurally unreachable through invariant-driven enforcement; violating paths deterministically refuse before side effects, and valid transitions require evidence artifacts. [1](https://www.gsma.com/newsroom/wp-content/uploads//NG.133-v1.0.pdf)
+> **All claims in this repository are backed by executable artifacts and replayable evidence.**
+
+---
+
+## Minimal Execution Flow (Proof)
+
+```eril
+INPUT: access_request(user, resource)
+
+IF attested_role(user) == "authorized"
+AND risk_score(resource) < threshold
+THEN PERMIT
+ELSE REFUSE
+
+EVIDENCE: required
+```
+
+Execution (ERI):
+
+* Evaluate inputs
+* Enforce admissibility
+* Produce signed evidence bundle
+
+Replay:
+
+* Re-run evaluation from evidence
+* Verify identical outcome
+```
 
 ---
 
@@ -20,9 +47,13 @@ This repository provides a **public reference surface**: minimal artifacts suffi
 - The complete ERIL normative specification (full SHALL/SHOULD/MAY corpus)
 - A certification authority or regulatory approval mechanism
 - A disclosure of proprietary methods, thresholds, scoring, or trade secrets
-- A claim of outcome correctness (ERIL evidences **process**, not correctness)
 
-(See **./IP-BOUNDARY.md**)
+- Prose policies → executable definitions  
+- Informal enforcement → deterministic admissibility  
+- Post-hoc evidence → mandatory evidence generation  
+- Trust-based verification → independent replay  
+
+ERIL is governance infrastructure.
 
 ---
 
@@ -39,17 +70,19 @@ This aligns with the operational governance gap repeatedly described in public g
 
 ## Quick start (public demo)
 
-> Scope notice: running these examples demonstrates the **verification surface** only; it does not constitute regulatory approval or certification authority. [2](https://industrial-software.com/wp-content/uploads/AVEVA_SystemPlatform/2023_r2_p01/System_Platform/ReadMe.html)
+> Scope notice: running these examples demonstrates **verification surface** only; it does not constitute regulatory approval or certification authority.
 
 ### Option A — Minimal replay demo
-1. Review the ERIL definition: `examples/eri-minimal/ERIL.md` 
-2. Review the recorded execution: `examples/eri-minimal/EXECUTION.json` 
-3. Validate the artifact structure:
+
+1. Review ERIL definition: `examples/eri-minimal/ERIL.md` 
+2. Review recorded execution: `examples/eri-minimal/EXECUTION.json` 
+3. Validate artifact structure:
    - `schemas/evidence.schema.json` 
-4. Follow the replay procedure:
+4. Follow replay procedure:
    - `examples/eri-minimal/REPLAY.md` 
 
 ### Option B — Refusal path demo
+
 1. Review refusal ERIL: `examples/eri-refusal/ERIL.md` 
 2. Review refusal artifact: `examples/eri-refusal/REFUSAL.json` 
 3. Confirm refusal semantics:
@@ -68,17 +101,28 @@ This aligns with the operational governance gap repeatedly described in public g
 
 ---
 
+## Reference Surface
+
+- `examples/` — minimal ERI examples (success + refusal)
+- `schemas/` — public JSON schemas for evidence/refusal artifacts
+- `verifier/` — deterministic verification/replay demo scripts
+- `docs/public/` — high-level public documentation (descriptive, not fully normative)
+- `IP-BOUNDARY.md` — what is intentionally omitted and how licensing works
+- `NORMATIVE-CORE-INDEX.md` — public index of what is claimed here vs what is licensed
+
+---
+
 ## Safety / scope posture
 
 ERIL and ERI patterns are compatible with safety-critical domains **only when bounded**.  
-Example ERIs should be intentionally constrained to a single micro-task with explicit refusals and no clinical or operational overreach — as demonstrated by governed ERI patterns where the system refuses output when safety conditions are not met and avoids diagnosis/recommendations. [3](https://arxiv.org/html/2507.05201v2)
+Example ERIs should be intentionally constrained to a single micro-task with explicit refusals and no clinical or operational overreach — as demonstrated by governed ERI patterns where system refuses output when safety conditions are not met and avoids diagnosis/recommendations.
 
 ---
 
 ## Licensing & IP
 
 This repository is published as a **public reference surface**.  
-NovaFuse retains rights to proprietary methods, trade secrets, and patent-pending techniques; this repo does not grant rights beyond what is explicitly stated in the license and **IP-BOUNDARY.md**. [5](https://securityboulevard.com/author/marian-newsome/)
+NovaFuse retains rights to proprietary methods, trade secrets, and patent-pending techniques; this repo does not grant rights beyond what is explicitly stated in license and **IP-BOUNDARY.md**.
 
 ---
 
