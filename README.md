@@ -1,5 +1,14 @@
 # NovaFuse ERIL — Public Reference Surface (IP‑Bound)
 
+<p align="left">
+  <img src="https://img.shields.io/badge/Status-Production--Ready-16A34A?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/Governance-Fail--Closed%20by%20Design-DC2626?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/Evidence-Replay--Verifiable-2563EB?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/IP-Public%20Reference%20Surface-7C3AED?style=flat&labelColor=111111" />
+</p>
+
+---
+
 **ERIL (Executable Reference Implementation Language)** defines how governance decisions are expressed as executable procedures that produce replayable evidence.  
 This repository provides a **public reference surface**: minimal artifacts sufficient to validate **fail‑closed execution**, **deterministic refusal**, and **cryptographic evidence production** — without publishing NovaFuse's full normative specification or proprietary governance methodology.
 
