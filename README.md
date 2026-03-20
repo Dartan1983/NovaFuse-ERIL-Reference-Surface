@@ -1,5 +1,14 @@
 # NovaFuse ERIL — Public Reference Surface (IP‑Bound)
 
+<p align="left">
+  <img src="https://img.shields.io/badge/Status-Production--Ready-16A34A?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/Governance-Fail--Closed%20by%20Design-DC2626?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/Evidence-Replay--Verifiable-2563EB?style=flat&labelColor=111111" />
+  <img src="https://img.shields.io/badge/IP-Public%20Reference%20Surface-7C3AED?style=flat&labelColor=111111" />
+</p>
+
+
+
 **ERIL (Executable Reference Implementation Language)** defines how governance decisions are expressed as executable procedures that produce replayable evidence.  
 This repository provides a **public reference surface**: minimal artifacts sufficient to validate **fail‑closed execution**, **deterministic refusal**, and **cryptographic evidence production** — without publishing NovaFuse's full normative specification or proprietary governance methodology.
 
@@ -43,10 +52,21 @@ Replay:
   - A minimal evidence / refusal artifact schema
   - A deterministic verification / replay demonstration
 
-### ❌ This repo is *not*
+### This repo is *not*
 - The complete ERIL normative specification (full SHALL/SHOULD/MAY corpus)
 - A certification authority or regulatory approval mechanism
 - A disclosure of proprietary methods, thresholds, scoring, or trade secrets
+- A claim of outcome correctness (ERIL evidences **process**, not correctness)
+
+(See **./IP-BOUNDARY.md**)
+
+---
+
+## What ERIL Does
+
+ERIL makes governance executable, verifiable, and replayable.
+
+It replaces:
 
 - Prose policies → executable definitions  
 - Informal enforcement → deterministic admissibility  
@@ -57,14 +77,28 @@ ERIL is governance infrastructure.
 
 ---
 
-## Why ERIL exists
+## 5-Minute Evaluation Path
 
-Traditional governance relies on policy text and mutable logs. ERIL shifts governance to:
-- **pre‑execution gating** (preventive controls)
-- **deterministic refusal semantics**
-- **evidence artifacts** that can be independently verified / replayed
+### Quick Start (Immediate Proof)
 
-This aligns with the operational governance gap repeatedly described in public governance discourse: governance must be proactive, enforced upfront, and traceable — not reactive "after the fact." [4](https://onedrive.live.com/?id=c4ae8b6b-951f-4406-93e4-bceb8bd31d7d&cid=77bcda69e97706c5&web=1)
+1. **Review execution flow** (above) - 30 seconds
+2. **Run minimal example** - 2 minutes
+   ```bash
+   cd examples/eri-minimal
+   # Review ERIL.md, EXECUTION.json, EVIDENCE.json
+   ```
+3. **Verify structure** - 1 minute
+   ```bash
+   cd verifier
+   ./verify.sh
+   ```
+4. **Test replay capability** - 2 minutes
+   ```bash
+   cd tools/replay-demo
+   ./replay.sh
+   ```
+
+**Result:** Complete ERIL → ERI → Evidence → Replay verification in under 5 minutes.
 
 ---
 
