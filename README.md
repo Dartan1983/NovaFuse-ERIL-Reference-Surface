@@ -1,4 +1,4 @@
-# NovaFuse ERIL — Public Reference Surface (IP‑Bound)
+## **Executable Reference Implementation Language ERIL — A Language for Defining Execution Admissibility**
 
 <p align="left">
   <img src="https://img.shields.io/badge/Status-Production--Ready-16A34A?style=flat&labelColor=111111" />
@@ -7,169 +7,213 @@
   <img src="https://img.shields.io/badge/IP-Public%20Reference%20Surface-7C3AED?style=flat&labelColor=111111" />
 </p>
 
+## **What ERIL is**
 
+ERIL is a **declarative rule language** used to define the conditions under which a system action is allowed to execute.
 
-**ERIL (Executable Reference Implementation Language)** defines how governance decisions are expressed as executable procedures that produce replayable evidence.  
-This repository provides a **public reference surface**: minimal artifacts sufficient to validate **fail‑closed execution**, **deterministic refusal**, and **cryptographic evidence production** — without publishing NovaFuse's full normative specification or proprietary governance methodology.
+An ERIL file consists of **rules** that:
 
-> **All claims in this repository are backed by executable artifacts and replayable evidence.**
+* declare required conditions (`requires`)  
+* define failure behavior (`refuse_execution`)  
+* mandate evidence production (`emit evidence`)
 
----
+These rules are evaluated **before execution**.
 
-## Minimal Execution Flow (Proof)
-
-```eril
-INPUT: access_request(user, resource)
-
-IF attested_role(user) == "authorized"
-AND risk_score(resource) < threshold
-THEN PERMIT
-ELSE REFUSE
-
-EVIDENCE: required
-```
-
-Execution (ERI):
-
-* Evaluate inputs
-* Enforce admissibility
-* Produce signed evidence bundle
-
-Replay:
-
-* Re-run evaluation from evidence
-* Verify identical outcome
-```
+If the rule cannot be satisfied, the action does not occur.
 
 ---
 
-## What this repo is (and is not)
+## **What ERIL does**
 
-### ✅ This repo *is*
-- A **public proof surface** for executable governance:
-  - A minimal ERIL definition example
-  - A minimal ERI execution example
-  - A minimal evidence / refusal artifact schema
-  - A deterministic verification / replay demonstration
+ERIL introduces a simple but strict model:
 
-### This repo is *not*
-- The complete ERIL normative specification (full SHALL/SHOULD/MAY corpus)
-- A certification authority or regulatory approval mechanism
-- A disclosure of proprietary methods, thresholds, scoring, or trade secrets
-- A claim of outcome correctness (ERIL evidences **process**, not correctness)
+**Execution is allowed only if it can be verified.**
 
-(See **./IP-BOUNDARY.md**)
+For every governed action:
 
----
+* ✅ If all required conditions are verifiable → execution proceeds  
+* ❌ If any condition cannot be verified → execution is refused
 
-## What ERIL Does
+In both cases, an **evidence artifact is produced**.
 
-ERIL makes governance executable, verifiable, and replayable.
+There is:
 
-It replaces:
-
-- Prose policies → executable definitions  
-- Informal enforcement → deterministic admissibility  
-- Post-hoc evidence → mandatory evidence generation  
-- Trust-based verification → independent replay  
-
-ERIL is governance infrastructure.
+* no partial success  
+* no fallback behavior  
+* no execution without verification
 
 ---
 
-## 5-Minute Evaluation Path
+## **What an ERIL rule looks like**
 
-### Quick Start (Immediate Proof)
+rule RegulatedDataAccess {
 
-1. **Review execution flow** (above) - 30 seconds
-2. **Run minimal example** - 2 minutes
-   ```bash
-   cd examples/eri-minimal
-   # Review ERIL.md, EXECUTION.json, EVIDENCE.json
-   ```
-3. **Verify structure** - 1 minute
-   ```bash
-   cd verifier
-   ./verify.sh
-   ```
-4. **Test replay capability** - 2 minutes
-   ```bash
-   cd tools/replay-demo
-   ./replay.sh
-   ```
+  requires identity.verified  
+  requires purpose.bound  
+  requires authorization.valid
 
-**Result:** Complete ERIL → ERI → Evidence → Replay verification in under 5 minutes.
+  on\_violation refuse\_execution  
+  emit evidence  
+}
 
 ---
 
-## Quick start (public demo)
+## **How to read this**
 
-> Scope notice: running these examples demonstrates **verification surface** only; it does not constitute regulatory approval or certification authority.
+* `requires` → conditions that must be provably true  
+* `refuse_execution` → fail-closed enforcement  
+* `emit evidence` → produce a verifiable artifact of the decision
 
-### Option A — Minimal replay demo
+This rule does not perform the action.
 
-1. Review ERIL definition: `examples/eri-minimal/ERIL.md` 
-2. Review recorded execution: `examples/eri-minimal/EXECUTION.json` 
-3. Validate artifact structure:
-   - `schemas/evidence.schema.json` 
-4. Follow replay procedure:
-   - `examples/eri-minimal/REPLAY.md` 
-
-### Option B — Refusal path demo
-
-1. Review refusal ERIL: `examples/eri-refusal/ERIL.md` 
-2. Review refusal artifact: `examples/eri-refusal/REFUSAL.json` 
-3. Confirm refusal semantics:
-   - `docs/public/REFUSAL-SEMANTICS.md` 
+It determines whether the action is **allowed to occur at all**.
 
 ---
 
-## Repository layout
+## **Execution model**
 
-- `docs/public/` — high-level public documentation (descriptive, not fully normative)
-- `examples/` — minimal ERI examples (success + refusal)
-- `schemas/` — public JSON schemas for evidence/refusal artifacts
-- `verifier/` — deterministic verification/replay demo scripts
-- `IP-BOUNDARY.md` — what is intentionally omitted and how licensing works
-- `NORMATIVE-CORE-INDEX.md` — public index of what is claimed here vs what is licensed
+Every ERIL rule evaluates to one of two outcomes:
 
----
+* **Admissible** → execution proceeds  
+* **Not admissible** → execution is refused
 
-## Reference Surface
+Both outcomes produce:
 
-- `examples/` — minimal ERI examples (success + refusal)
-- `schemas/` — public JSON schemas for evidence/refusal artifacts
-- `verifier/` — deterministic verification/replay demo scripts
-- `docs/public/` — high-level public documentation (descriptive, not fully normative)
-- `IP-BOUNDARY.md` — what is intentionally omitted and how licensing works
-- `NORMATIVE-CORE-INDEX.md` — public index of what is claimed here vs what is licensed
+* a deterministic decision  
+* a verifiable evidence artifact
 
 ---
 
-## Safety / scope posture
+## **The problem ERIL solves**
 
-ERIL and ERI patterns are compatible with safety-critical domains **only when bounded**.  
-Example ERIs should be intentionally constrained to a single micro-task with explicit refusals and no clinical or operational overreach — as demonstrated by governed ERI patterns where system refuses output when safety conditions are not met and avoids diagnosis/recommendations.
+Most systems separate intent from execution:
+
+* policies describe expected behavior  
+* systems execute regardless  
+* verification happens afterward
+
+This leads to:
+
+* unverifiable execution  
+* delayed detection of violations  
+* reliance on logs and interpretation
+
+ERIL removes that gap by requiring:
+
+**verification before execution**
 
 ---
 
-## Licensing & IP
+## **What ERIL is not**
 
-This repository is published as a **public reference surface**.  
-NovaFuse retains rights to proprietary methods, trade secrets, and patent-pending techniques; this repo does not grant rights beyond what is explicitly stated in license and **IP-BOUNDARY.md**.
+ERIL is not:
+
+* a general-purpose programming language  
+* a system for implementing business logic  
+* a monitoring or logging tool  
+* a policy engine that can be bypassed
+
+ERIL does not compute results.
+
+It governs whether computation is permitted.
 
 ---
 
-## Contact
+## **Mental model**
 
-- Email: novafuse.technologies@gmail.com
+Traditional code answers:
+
+“What should the system do?”
+
+ERIL answers:
+
+“Is the system allowed to do this?”
 
 ---
 
-## Attribution
+## **Evidence**
 
-If you cite this repository in an audit, assessment, or standards process, cite:
-- Repository tag/release
-- Commit hash
-- `NORMATIVE-CORE-INDEX.md` 
-- Applicable example ERI artifact(s)
+Every evaluation produces an artifact that is:
+
+* cryptographically verifiable  
+* immutable  
+* independently replayable
+
+This allows external parties to verify:
+
+“Was this execution allowed under the defined rules?”
+
+without relying on internal system trust.
+
+---
+
+## **Example: Failed Execution (Refusal Path)**
+
+Text  
+Action requested:  
+  Access regulated dataset "patient\_records\_v2"
+
+ERIL rule evaluated:  
+  RegulatedDataAccess
+
+Verification results:  
+  identity.verified        ✅  
+  authorization.valid     ✅  
+  purpose.bound            ❌
+
+Outcome:  
+  EXECUTION REFUSED
+  
+---
+
+Evidence artifact produced:  
+
+Json  
+{  
+  "decision": "REFUSED",  
+  "rule": "RegulatedDataAccess",  
+  "failed\_requirement": "purpose.bound",  
+  "timestamp": "2026-03-14T20:11:42Z",  
+  "execution\_hash": "0x7a9f3d…",  
+  "signature": "ed25519:4c91ab…",  
+  "replayable": true  
+}
+
+---
+The action did not occur.  
+The refusal is verifiable.  
+---
+
+## **Why this matters**
+
+If a condition is important enough to define, it must be enforced before execution.
+
+If enforcement happens after execution, it is not control—it is observation.
+
+ERIL makes admissibility enforceable.
+
+---
+
+## **Relationship to ERI**
+
+ERIL rules are used within **Executable Reference Implementations (ERIs)**.
+
+An ERI:
+
+* applies ERIL rules to real execution  
+* enforces admissibility before execution  
+* produces verifiable evidence artifacts
+
+ERIL defines the rules.
+
+ERIs enforce them.
+
+---
+
+## **Closing**
+
+Most systems allow execution and verification later.
+
+ERIL requires verification first.
+
+---
