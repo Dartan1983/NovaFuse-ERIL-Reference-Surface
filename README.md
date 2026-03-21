@@ -1,6 +1,4 @@
-
 # **ERIL — A Language for Execution Admissibility**
-
 <p align="left">
   <img src="https://img.shields.io/badge/Status-Production--Ready-16A34A?style=flat&labelColor=111111" />
   <img src="https://img.shields.io/badge/Governance-Fail--Closed%20by%20Design-DC2626?style=flat&labelColor=111111" />
@@ -10,12 +8,14 @@
 
 ## **What ERIL is**
 
-ERIL (Executable Reference Implementation Language) is a **declarative rule language** used to define whether a system action is allowed to execute.
+**ERIL (Executable Reference Implementation Language)** is a **declarative rule language** for defining whether a system action is *allowed* to execute.
 
 An ERIL file consists of rules that:
 
-* declare required conditions (`requires`)  
-* define failure behavior (`refuse_execution`)  
+* declare required conditions (`requires`)
+
+* define failure behavior (`refuse_execution`)
+
 * mandate evidence production (`emit evidence`)
 
 All rules are evaluated **before execution**.
@@ -24,80 +24,90 @@ If a rule cannot be satisfied, the action does not occur.
 
 ---
 
-## **Core principle**
+## **Core Principle**
 
 **Execution is allowed only if it can be verified.**
 
 ---
 
-## **What ERIL does**
+## **What ERIL Does**
 
 For every governed action:
 
-* ✅ If all required conditions are verifiable → execution proceeds  
+* ✅ If all required conditions are verifiable → execution proceeds
+
 * ❌ If any condition cannot be verified → execution is refused
 
 In both cases, an **evidence artifact** is produced.
 
 There is:
 
-* no partial success  
-* no fallback behavior  
+* no partial success
+
+* no fallback behavior
+
 * no execution without verification
 
 ---
 
-## **What an ERIL rule looks like**
+## **What an ERIL Rule Looks Like**
 
 rule RegulatedDataAccess {
 
-  requires identity.verified  
-  requires purpose.bound  
-  requires authorization.valid
+   requires identity.verified  
+   requires purpose.bound  
+   requires authorization.valid
 
-  on\_violation refuse\_execution  
-  emit evidence  
-}
+   on\_violation refuse\_execution  
+   emit evidence  
+}  
+---
+
+## **How to Read This**
+
+* **`requires`** → conditions that must be provably true
+
+* **`refuse_execution`** → fail‑closed enforcement when a requirement is not met
+
+* **`emit evidence`** → produce a verifiable artifact of the decision
+
+This rule does not perform the action itself.  
+ It determines whether the action is *allowed to occur*.
 
 ---
 
-## **How to read this**
-
-* `requires` → conditions that must be provably true  
-* `refuse_execution` → fail‑closed enforcement  
-* `emit evidence` → produce a verifiable artifact
-
-This rule does not perform the action.  
-It determines whether the action is allowed to occur.
-
----
-
-## **Execution model**
+## **Execution Model**
 
 Every ERIL rule resolves to one of two outcomes:
 
-* **Admissible** → execution proceeds  
+* **Admissible** → execution proceeds
+
 * **Not admissible** → execution is refused
 
 Both outcomes produce:
 
-* a deterministic decision  
+* a deterministic decision
+
 * a verifiable evidence artifact
 
 ---
 
-## **The problem ERIL solves**
+## **The Problem ERIL Solves**
 
-Most systems separate intent from execution:
+In many systems:
 
-* policies describe expected behavior  
-* systems execute regardless  
+* policies describe intent
+
+* execution happens regardless
+
 * verification happens afterward
 
 This leads to:
 
-* unverifiable execution  
-* delayed detection of violations  
+* unverifiable execution
+
+* delayed detection of violations
+
 * reliance on logs and interpretation
 
 ERIL removes this gap by requiring:
@@ -109,108 +119,110 @@ ERIL removes this gap by requiring:
 ## **Example: Failed Execution (Refusal Path)**
 
 **Action requested:**  
-Access regulated dataset `patient_records_v2`
+ Access regulated dataset `patient_records_v2`
 
 **Rule evaluated:**  
-`RegulatedDataAccess`
+ `RegulatedDataAccess`
 
 **Verification results:**
 
-* identity.verified ✅  
-* authorization.valid ✅  
-* purpose.bound ❌
+* `identity.verified` ✅
+
+* `authorization.valid` ✅
+
+* `purpose.bound` ❌
 
 **Outcome:**  
-**EXECUTION REFUSED**
+ **EXECUTION REFUSED**
 
 **Evidence artifact:**
 
 {  
-  "decision": "REFUSED",  
-  "rule": "RegulatedDataAccess",  
-  "failed\_requirement": "purpose.bound",  
-  "timestamp": "2026-03-14T20:11:42Z",  
-  "execution\_hash": "0x7a9f3d…",  
-  "signature": "ed25519:4c91ab…",  
-  "replayable": true  
+ "decision": "REFUSED",  
+ "rule": "RegulatedDataAccess",  
+ "failed\_requirement": "purpose.bound",  
+ "timestamp": "2026-03-14T20:11:42Z",  
+ "execution\_hash": "0x7a9f3d…",  
+ "signature": "ed25519:4c91ab…",  
+ "replayable": true  
 }
 
-The action did not occur.  
-The refusal is verifiable.
+The action did not occur, and the refusal is independently verifiable.
 
 ---
 
-## **What ERIL is not**
+## **What ERIL Is Not**
 
 ERIL is not:
 
-* a general-purpose programming language  
-* a system for implementing business logic  
-* a monitoring or logging tool  
-* a policy engine that can be bypassed
+* a general‑purpose programming language
+
+* a system for implementing business logic
+
+* a monitoring or logging tool
+
+* a bypassable policy engine
 
 ERIL does not compute results.  
-It governs whether computation is permitted.
+ It governs whether computation is permitted.
 
 ---
 
-## **Mental model**
+## **Mental Model**
 
-Traditional code answers:
+Traditional systems answer:
 
-“What should the system do?”
+“What should the system *do*?”
 
 ERIL answers:
 
-“Is the system allowed to do this?”
+“Is the system *allowed* to do this?”
 
 ---
 
 ## **Evidence**
 
-Every evaluation produces an artifact that is:
+Every ERIL evaluation produces an artifact that is:
 
-* cryptographically verifiable  
-* immutable  
+* cryptographically verifiable
+
+* immutable
+
 * independently replayable
 
-This allows external parties to verify:
+This enables external verification of:
 
-“Was this execution admissible under the defined rules?”
-
-without relying on internal system trust.
+“Was this execution admissible under the defined rules?”  
+ without trusting internal logs or systems.
 
 ---
 
 ## **Relationship to ERI**
 
-ERIL rules are used within **Executable Reference Implementations (ERIs)**.
+ERIL rules are the expression layer used within **Executable Reference Implementations (ERIs)**. In practice:
 
-An ERI:
+* an ERI applies ERIL rules at runtime
 
-* applies ERIL rules to real execution  
-* enforces admissibility before execution  
-* produces verifiable evidence artifacts
+* it enforces admissibility before execution
+
+* it produces verifiable evidence artifacts
 
 **ERIL defines the rules.**  
-**ERIs enforce them.**
+ **ERIs enforce them.**
+ 
+For more details on ERIs, see the [NovaFuse‑ERI‑System repository](https://github.com/Dartan1983/NovaFuse-ERI-System).
 
 ---
 
-## **Why this matters**
+## **Why This Matters**
 
-If a condition is important enough to define, it must be enforced **before execution**.
-
-If enforcement happens afterward, it is not control—it is observation.
-
-ERIL makes admissibility enforceable.
+If a condition is important enough to define, it must be enforced *before execution*.  
+ If enforcement happens afterward, it is observation—not control. ERIL makes admissibility enforceable.
 
 ---
 
 ## **Closing**
 
-Most systems allow execution and verify later.  
+Most systems allow execution and verify later.
+
 **ERIL requires verification first.**
-
----
-
